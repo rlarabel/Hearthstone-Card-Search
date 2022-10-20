@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "1a. Short Card Parse",
+      "setup": "",
+      "run": "bash ./tests/1a_parse_shscards.test",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 2
+    },
+    {
+      "name": "1b. Short Card Search",
+      "setup": "",
+      "run": "bash ./tests/1b_search_shscards.test",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 2
+    },
+    {
+      "name": "1c. Full Card Parse",
+      "setup": "",
+      "run": "bash ./tests/1c_parse_hscards.test",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 4
+    },
+    {
+      "name": "1d. Full Card Search",
+      "setup": "",
+      "run": "bash ./tests/1d_search_hscards.test",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 4
+    }
+  ]
+}
