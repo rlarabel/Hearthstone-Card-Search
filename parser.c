@@ -34,7 +34,7 @@ int sort_compar(const void *a, const void *b) {
 
 CARD_T **cards = NULL;
 size_t total_cards = 0;
-	INDEX_T** indexes = NULL;	
+INDEX_T** indexes = NULL;	
 
 
 int main(int argc, char **argv) {
@@ -245,10 +245,13 @@ CARD_T *parse_card(char *line) {
 					
 				} else if (dup_check != NO_DUPE) {
 					free_card(cards[dup_check]);
+					free_index(indexes[dup_check]);
 
 					// Rewites cards w/o higher id dup
-					if((total_cards-1) > dup_check)
+					if((total_cards-1) > dup_check) {
 						memmove(&cards[dup_check], &cards[dup_check+1], (total_cards-dup_check-1)*sizeof(CARD_T**));
+						memmove(&indexes[dup_check], &indexes[dup_check+1], (total_cards-dup_check-1)*sizeof(INDEX_T**));
+					}
 					--total_cards;			
 				}
 
