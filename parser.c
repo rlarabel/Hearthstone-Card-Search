@@ -59,29 +59,30 @@ int main(int argc, char **argv) {
 		c = parse_card(line);
 		if(c != NULL) 
 		{
-			
-			// Add parsed card to cards array and sort
+			// Add parsed card to cards array
 			cards = realloc(cards, sizeof(cards)*(total_cards+1));
-			indexes = realloc(indexes, sizeof(indexes)*(total_cards+1));
-			indexes[total_cards] = build_index(ftell(cards_bin), c->name);
 			cards[total_cards++] = c;
-			write_card(c, cards_bin);
-			
-			
 		}
 		
 		result = getline(&line, &n, infile);
 	}
 
 	fclose(infile);
-	fclose(cards_bin);
+	
 	free(line);
+	
+	int i;
+	indexes = malloc(sizeof(indexes)*total_cards);
+	for(i = 0; i < total_cards; i++) {
+		indexes[i] = build_index(ftell(cards_bin), cards[i]->name);
+		write_card(cards[i], cards_bin);
+	}
 	
 	qsort(indexes, total_cards, sizeof(INDEX_T*), sort_compar);
 	
 	write_index(index_bin);
 	
-	for(int i=0;i<total_cards; i++){
+	for(i = 0; i < total_cards; i++){
 		free_card(cards[i]);
 		free_index(indexes[i]);
 		
@@ -89,6 +90,7 @@ int main(int argc, char **argv) {
 	
 	free(cards);
 	free(indexes);
+	fclose(cards_bin);
 	fclose(index_bin);
 	
 	return 0;
@@ -202,8 +204,9 @@ void free_card(CARD_T *card) {
 CARD_T *parse_card(char *line) {
 	char* temp_str;
 	int i = 0;
-	CARD_T* card = malloc(sizeof(CARD_T));
 	int dup_check;
+	CARD_T* card = malloc(sizeof(CARD_T));
+
 	
 	// Strips new line character at end of line
 	line = strsep(&line, "\n");
@@ -245,12 +248,10 @@ CARD_T *parse_card(char *line) {
 					
 				} else if (dup_check != NO_DUPE) {
 					free_card(cards[dup_check]);
-					free_index(indexes[dup_check]);
 
 					// Rewites cards w/o higher id dup
 					if((total_cards-1) > dup_check) {
 						memmove(&cards[dup_check], &cards[dup_check+1], (total_cards-dup_check-1)*sizeof(CARD_T**));
-						memmove(&indexes[dup_check], &indexes[dup_check+1], (total_cards-dup_check-1)*sizeof(INDEX_T**));
 					}
 					--total_cards;			
 				}
@@ -443,6 +444,7 @@ void write_card(CARD_T* card, FILE* bin) {
 	fwrite(card->text, sizeof(char), text_len, bin);
 	fwrite(&card->attack, sizeof(unsigned), 1, bin);
 	fwrite(&card->health, sizeof(unsigned), 1, bin);
+	
 }
 
 void write_index(FILE* bin) {
